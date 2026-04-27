@@ -1,0 +1,55 @@
+schema_version: 1
+
+context:
+  name: chowlk-unofficial-fork
+  version: "0.0.2"
+
+package:
+  name: ${{ name|lower }}
+  version: ${{ version }}
+
+source:
+  url: https://pypi.org/packages/source/${{ name[0] }}/${{ name }}/chowlk_unofficial_fork-${{ version }}.tar.gz
+  sha256: ddaf21759548f0711848749ea6d3ad8406a7346e2691cb3310b9c99c57588ec4
+
+build:
+  number: 2
+  noarch: python
+  script: ${{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  python:
+    entry_points:
+      - chowlk-converter = chowlk.converter:main
+
+requirements:
+  host:
+    - python ${{ python_min }}.*
+    - setuptools >=42
+    - wheel
+    - pip
+  run:
+    - python >=${{ python_min }}
+    - beautifulsoup4 >=4.9.1
+    - rdflib <7.0.0,>=5.0.0
+
+tests:
+  - python:
+      imports:
+        - chowlk
+      pip_check: true
+      python_version: ${{ python_min }}
+  - requirements:
+      run:
+        - pip
+        - python ${{ python_min }}.*
+    script:
+      - chowlk-converter --help
+
+about:
+  summary: Temporary unofficial fork from Chowlk
+  license: Apache-2.0
+  license_file: LICENSE
+  homepage: https://github.com/pablo-de-andres/Chowlk
+
+extra:
+  recipe-maintainers:
+    - jan-janssen
